@@ -1,0 +1,14 @@
+# Pinned. Every number in results/ was produced under exactly these versions.
+
+# Retrieval
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.0
+rank-bm25==0.2.2
+
+# Model backends (Ollama speaks plain HTTP; no vendor SDK needed)
+httpx==0.28.1
+
+# Development
+pytest==9.1.1
+ruff==0.16.6
