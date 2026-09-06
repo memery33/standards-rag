@@ -211,6 +211,12 @@ def aggregate(
         out[f"random_recall_loose@{k}"] = round(rand_loose, 4)
         out[f"beats_random_loose@{k}"] = bool(loose > rand_loose)
         out[f"beats_random_strict@{k}"] = bool(strict > rand_strict)
+        # Lift is the honest headline. Raw recall rewards a chunker whose
+        # chunks cover more of the document per chunk, because its random
+        # baseline rises too. Subtracting the baseline compares strategies
+        # on what they add over chance rather than on chunk width.
+        out[f"lift_strict@{k}"] = round(strict - rand_strict, 4)
+        out[f"lift_loose@{k}"] = round(loose - rand_loose, 4)
         out[f"mean_context_tokens@{k}"] = round(
             sum(s.context_tokens[k] for s in scores) / n, 1
         )
