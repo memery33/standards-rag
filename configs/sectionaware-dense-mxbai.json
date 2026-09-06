@@ -1,0 +1,9 @@
+{
+  "run_name": "sectionaware-dense-mxbai",
+  "chunker": {"name": "section_aware", "params": {"max_tokens": 220, "min_tokens": 60}},
+  "retriever": {"name": "dense"},
+  "embedder": {"name": "ollama", "params": {"model": "mxbai-embed-large"}},
+  "generator": {"name": "ollama", "params": {"model": "llama3.1:8b"}},
+  "refusal_threshold": 0.7,
+  "notes": "UNRUN in the sandbox. Embedding model arm 2. Differs from sectionaware-dense-nomic in the embedding model ONLY."
+}

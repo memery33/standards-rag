@@ -1,0 +1,10 @@
+{
+  "run_name": "sectionaware-hybrid-crossencoder",
+  "chunker": {"name": "section_aware", "params": {"max_tokens": 220, "min_tokens": 60}},
+  "retriever": {"name": "hybrid", "params": {"fusion": "rrf", "rrf_k": 60}},
+  "embedder": {"name": "ollama", "params": {"model": "nomic-embed-text"}},
+  "reranker": {"name": "cross_encoder"},
+  "generator": {"name": "ollama", "params": {"model": "llama3.1:8b"}},
+  "refusal_threshold": 0.7,
+  "notes": "UNRUN in the sandbox. Needs sentence-transformers and a downloadable cross-encoder. Reranking variable on top of sectionaware-hybrid."
+}

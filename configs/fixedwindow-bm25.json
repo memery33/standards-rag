@@ -1,0 +1,8 @@
+{
+  "run_name": "fixedwindow-bm25",
+  "chunker": {"name": "fixed_window", "params": {"size": 180, "overlap": 40}},
+  "retriever": {"name": "bm25"},
+  "generator": {"name": "extractive"},
+  "refusal_threshold": 0.7,
+  "notes": "Baseline. Naive sliding window, no heading awareness. Expected to lose on strict recall and citation precision because its chunks straddle sections."
+}
