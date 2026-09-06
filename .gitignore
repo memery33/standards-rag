@@ -1,0 +1,40 @@
+# Secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+npm-debug.log*
+.next/
+dist/
+
+# Indexes and caches (rebuildable from data/raw)
+.index/
+*.faiss
+*.sqlite3
+chroma/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Notes
+# results/ is intentionally NOT ignored - eval runs are committed
