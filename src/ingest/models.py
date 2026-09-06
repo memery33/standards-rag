@@ -93,7 +93,7 @@ class HeadingNode:
     tables: list[Table] = field(default_factory=list)
     steps: list[ProcedureStep] = field(default_factory=list)
     modality_spans: list[ModalitySpan] = field(default_factory=list)
-    children: list["HeadingNode"] = field(default_factory=list)
+    children: list[HeadingNode] = field(default_factory=list)
 
     @property
     def path_str(self) -> str:

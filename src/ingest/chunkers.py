@@ -8,8 +8,9 @@ they cut.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Callable, Protocol, Sequence
+from typing import Protocol
 
 from .models import Chunk, Document, HeadingNode, HeadingPath, render_path
 

@@ -7,6 +7,7 @@ coverage against the same ground truth.
 
 from __future__ import annotations
 
+from itertools import pairwise
 from pathlib import Path
 
 import pytest
@@ -124,7 +125,7 @@ def test_oversized_section_splits_at_sentence_boundaries(doc):
 def test_fixed_window_overlaps_and_covers_the_document(doc):
     chunks = FixedWindowChunker(size=30, overlap=10).chunk(doc)
     assert len(chunks) > 1
-    for earlier, later in zip(chunks, chunks[1:]):
+    for earlier, later in pairwise(chunks):
         assert later.char_start < earlier.char_end, "windows do not overlap"
 
 

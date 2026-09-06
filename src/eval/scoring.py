@@ -17,9 +17,9 @@ Two decisions here carry most of the weight:
 from __future__ import annotations
 
 import random
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from math import comb
-from typing import Iterable, Sequence
 
 from ..ingest.models import Chunk, HeadingPath
 
