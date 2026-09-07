@@ -50,7 +50,12 @@ class Config:
 
     ks: tuple[int, ...] = (1, 3, 5, 10)
     top_k: int = 10
-    refusal_threshold: float = 0.15
+    # 0.70 is the balanced-accuracy optimum from the sweep in
+    # results/*/metrics.json under refusal_sweep. It was selected on the eval
+    # set, which inflates it -- see "What did not work" in the README. The
+    # default matches the committed runs so `make eval` with no config
+    # reproduces documented behaviour rather than never refusing.
+    refusal_threshold: float = 0.70
     notes: str = ""
 
     @classmethod
