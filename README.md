@@ -106,11 +106,26 @@ set was weighted toward synthesis rather than lookup.
 ```bash
 cp .env.example .env      # add your API keys
 make install
-make test                 # 75 tests: chunking, scoring, golden set, retrieval
+make test                 # 78 tests: chunking, scoring, golden set, retrieval
+make ingest               # parse and chunk, printing the chunk inventory
 make eval                 # score the default config against the golden set
 make eval-all             # every arm that needs no model backend
+make verify               # re-derive every committed run and check it matches
 make compare              # regenerate the results table above
+
+make eval CONFIG=configs/sectionaware-hybrid.json   # a specific arm
+make serve Q="What training do spotters need?"      # one question, by hand
 ```
+
+### Reproducing the numbers
+
+`make verify` rebuilds every run in `results/` from its own `config.json` and
+compares the fresh metrics against the committed ones. It is the repo's central
+claim made executable rather than asserted: if the code drifts from the results,
+the check fails. CI runs it on every push, alongside the tests, the lint, and a
+validation of the golden set against the corpus. Latency is deliberately
+excluded from the comparison — it is machine-dependent, and a check that fails
+on a different laptop teaches readers to ignore it.
 
 ## Layout
 

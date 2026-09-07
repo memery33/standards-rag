@@ -1,0 +1,57 @@
+name: CI
+
+# The repo's claim is that its numbers are reproducible. CI is that claim
+# checked on every push rather than asserted in a README: it runs the tests,
+# validates the golden set against the corpus, and re-derives every committed
+# run from its own config to confirm the metrics still match.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint
+        run: ruff check src tests
+
+      - name: Tests
+        run: pytest tests -q
+
+      - name: Golden set validates against the corpus
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from src.eval.golden import load_questions, load_refusals, validate
+          from src.ingest.parser import parse_document
+
+          doc = parse_document(Path("data/raw/itcp-fundamentals.md").read_text(), "itcp-fundamentals")
+          questions = load_questions("data/golden/questions.jsonl")
+          refusals = load_refusals("data/golden/refusals.jsonl")
+          validate(questions, refusals, doc).raise_if_invalid()
+          print(f"{len(questions)} questions and {len(refusals)} refusals validate")
+          PY
+
+      - name: Committed runs still reproduce
+        run: python -m src.eval.verify
+
+      - name: No secrets committed
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|\.pem$|\.key$'; then
+            echo "a secret file is tracked"; exit 1
+          fi
+          echo "clean"
