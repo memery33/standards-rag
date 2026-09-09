@@ -1,43 +1,85 @@
 # standards-rag
 
-A retrieval-augmented question answering system over a technical standards
-document, built to be **measured rather than demoed**.
+Retrieval-augmented question answering over a technical standards document,
+built so that the **evaluation harness is the deliverable** and the chat
+interface is not.
 
-Most RAG projects stop at "it answers questions." This one treats retrieval
-quality as an engineering problem: every configuration change is scored against
-a fixed golden question set, results are versioned in `results/`, and the
-failures are documented alongside the wins.
+Most retrieval projects stop at "it answers questions." The interesting
+engineering problem is knowing whether the answers are *right*, and being able
+to show your work when someone asks.
 
-## Why this exists
+**Status: BM25 arms scored and committed.** Ingestion, both chunkers, the
+golden set, retrieval, generation and the eval harness are in place, with four
+scored runs in `results/`. The dense, hybrid, reranking and embedding-model
+arms are implemented and configured but **unrun** — they need a local Ollama
+server. Nothing in this README claims a result that isn't in `results/`, and
+every number below links to the run that produced it.
 
-The corpus is an Internal Traffic Control Plan (ITCP) standards reference I
-wrote myself — a real document with the properties that make RAG hard:
-numbered clauses, nested cross-references, tables, and conditional language
-where "shall" and "should" carry different weight. Getting a citation wrong in
-a document like this is not a cosmetic failure.
+## The corpus
 
-## What is measured
+`data/raw/itcp-fundamentals.md` — a reference on Internal Traffic Control Plans
+(ITCPs), the site-specific plans that coordinate equipment and workers on foot
+inside a roadway work zone. It is my own paraphrased summary of public Federal
+Highway Administration and American Road and Transportation Builders
+Association guidance, written originally as reference material for
+[Spotter](https://www.planwithspotter.com), a work-zone safety product I build.
+
+It is small, roughly 1,600 words, and that shapes the whole design. What makes
+it a real test is not size:
+
+- **Conditional language.** "Shall", "should" and "may" carry different weight.
+  An answer that flattens them is wrong even when it reads correctly.
+- **Structure without clause numbers.** Markdown headings, one numbered
+  eight-step process, a symbology table and a personnel responsibility matrix.
+  There is no `4.2.1` to anchor a citation to, so ground truth is the
+  **heading path** (`Operation templates > Asphalt milling`) instead.
+- **Tables bound to prose.** Splitting one from its section loses the meaning.
+- **Consequences.** These are safety documents. A confident wrong citation is
+  the failure mode that matters.
+
+## Design decisions
+
+**Heading path is the ground truth, not the chunk ID.** The golden set records
+heading paths. Chunk IDs encode which strategy produced them. That is what
+makes the chunking comparison honest: fixed-window and section-aware chunkers
+cut in completely different places, and both are still scored against the same
+target.
+
+**Recall is reported strict and loose.** For questions needing several
+sections, strict means every gold section is in the top k; loose means at least
+one is. Reporting only loose flatters multi-section performance badly.
+Mean Reciprocal Rank uses the rank of the first gold section.
+
+**Refusal is a measured behavior.** A separate set of questions that sound
+plausible for this domain but are not answerable from the corpus. A system that
+never refuses is not safe, it is confident.
+
+## What gets measured
 
 | Dimension | Metric |
 |---|---|
-| Retrieval | recall@k and MRR at k = 1, 3, 5, 10 |
-| Answer quality | groundedness / faithfulness score |
+| Retrieval | recall@k (strict and loose) and Mean Reciprocal Rank at k = 1, 3, 5, 10 |
+| Answer quality | groundedness / faithfulness |
 | Citation | citation accuracy against the golden set |
 | Safety | refusal rate on out-of-corpus questions |
 | Cost | tokens and latency per query, logged per run |
 
-The golden question set lives in `data/golden/` and is committed. So are the
-eval runs in `results/`, so any claim in this README can be checked against
-the run that produced it.
-
 ## Experiments
 
-Each of these is a separate scored run, not a design decision made by vibes:
+One variable at a time, each a separate committed run.
 
-- Chunking strategy — fixed window vs. clause-aware splitting
-- Retrieval — dense vector vs. BM25 vs. hybrid
-- Reranking — with and without a cross-encoder rerank stage
-- Embedding model — comparison across at least two models
+**Run and committed** (BM25 is pure Python — no models, no network, so these
+reproduce anywhere):
+
+- Chunking — fixed window versus section-aware
+- Reranking — with and without, on both chunkers
+
+**Implemented, configured, unrun** (each needs a local Ollama server; configs
+are in `configs/`, and switching backend is a config change and nothing else):
+
+- Retrieval — dense vector and hybrid, against the BM25 baseline
+- Embedding model — `nomic-embed-text` versus `mxbai-embed-large`
+- Reranking — a real cross-encoder, versus the lexical reranker used above
 
 ## Results
 
@@ -100,44 +142,6 @@ perfect. Strict recall says one synthesis question in seven retrieves all its
 gold sections in the top 3. That gap — 1.00 versus 0.14 on the same questions —
 is the single strongest argument for reporting both, and it is why the golden
 set was weighted toward synthesis rather than lookup.
-
-## Quick start
-
-```bash
-cp .env.example .env      # add your API keys
-make install
-make test                 # 78 tests: chunking, scoring, golden set, retrieval
-make ingest               # parse and chunk, printing the chunk inventory
-make eval                 # score the default config against the golden set
-make eval-all             # every arm that needs no model backend
-make verify               # re-derive every committed run and check it matches
-make compare              # regenerate the results table above
-
-make eval CONFIG=configs/sectionaware-hybrid.json   # a specific arm
-make serve Q="What training do spotters need?"      # one question, by hand
-```
-
-### Reproducing the numbers
-
-`make verify` rebuilds every run in `results/` from its own `config.json` and
-compares the fresh metrics against the committed ones. It is the repo's central
-claim made executable rather than asserted: if the code drifts from the results,
-the check fails. CI runs it on every push, alongside the tests, the lint, and a
-validation of the golden set against the corpus. Latency is deliberately
-excluded from the comparison — it is machine-dependent, and a check that fails
-on a different laptop teaches readers to ignore it.
-
-## Layout
-
-```
-data/raw/      source documents (not committed if licensing is unclear)
-data/golden/   evaluation question set, committed
-src/ingest/    parsing and chunking
-src/retrieval/ index construction and search
-src/generation/ prompt assembly and answer synthesis
-src/eval/      scoring harness
-results/       versioned eval runs, committed
-```
 
 ## What did not work
 
@@ -217,6 +221,44 @@ It was not — the personnel matrix ranks first. A predicted failure that did no
 happen, recorded because a golden set that only contains predictions that came
 true has been curated after the fact.
 
+## Layout
+
+```
+data/raw/       the corpus
+data/golden/    evaluation question set and its schema
+configs/        one JSON per experiment arm, run and unrun
+results/        versioned eval runs, committed (never gitignored)
+src/            ingestion, retrieval, generation, eval
+tests/          unit tests for chunking and scoring
+```
+
+## Quick start
+
+```bash
+cp .env.example .env
+make install
+make test                 # 78 tests: chunking, scoring, golden set, retrieval
+make ingest               # parse and chunk, printing the chunk inventory
+make eval                 # score the default config against the golden set
+make eval-all             # every arm that needs no model backend
+make verify               # re-derive every committed run and check it matches
+make compare              # regenerate the results table above
+
+make eval CONFIG=configs/sectionaware-dense-nomic.json   # an Ollama arm
+make serve Q="What training do spotters need?"           # one question, by hand
+```
+
+### Reproducing the numbers
+
+`make verify` rebuilds every run in `results/` from its own `config.json` and
+compares the fresh metrics against the committed ones. It is the central claim
+made executable rather than asserted: if the code drifts from the results, the
+check fails. CI runs it on every push, alongside the tests, the lint, and a
+validation of the golden set against the corpus. Latency is deliberately
+excluded from the comparison — it is machine-dependent, and a check that fails
+on a different laptop teaches readers to ignore it.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). The corpus is my own writing, summarizing
+public-domain federal guidance.
