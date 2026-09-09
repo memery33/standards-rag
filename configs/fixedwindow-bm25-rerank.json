@@ -1,0 +1,9 @@
+{
+  "run_name": "fixedwindow-bm25-rerank",
+  "chunker": {"name": "fixed_window", "params": {"size": 180, "overlap": 40}},
+  "retriever": {"name": "bm25"},
+  "reranker": {"name": "lexical_overlap", "params": {"weight": 0.5}},
+  "generator": {"name": "extractive"},
+  "refusal_threshold": 0.7,
+  "notes": "Reranking variable only, on top of fixedwindow-bm25. Tests whether reranking rescues the naive chunker."
+}

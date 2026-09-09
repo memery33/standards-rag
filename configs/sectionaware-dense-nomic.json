@@ -1,0 +1,9 @@
+{
+  "run_name": "sectionaware-dense-nomic",
+  "chunker": {"name": "section_aware", "params": {"max_tokens": 220, "min_tokens": 60}},
+  "retriever": {"name": "dense"},
+  "embedder": {"name": "ollama", "params": {"model": "nomic-embed-text"}},
+  "generator": {"name": "ollama", "params": {"model": "llama3.1:8b"}},
+  "refusal_threshold": 0.7,
+  "notes": "UNRUN in the sandbox: needs a local Ollama server. Embedding model arm 1. Run with: ollama pull nomic-embed-text && make eval CONFIG=configs/sectionaware-dense-nomic.json"
+}

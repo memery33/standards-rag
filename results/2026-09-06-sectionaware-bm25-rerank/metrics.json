@@ -1,0 +1,309 @@
+{
+  "n_questions": 25,
+  "corpus_chunks": 14,
+  "mean_paths_per_chunk": 1.276,
+  "recall_strict@1": 0.56,
+  "recall_loose@1": 0.92,
+  "mrr@1": 0.92,
+  "random_recall_strict@1": 0.0422,
+  "random_recall_loose@1": 0.1314,
+  "beats_random_loose@1": true,
+  "beats_random_strict@1": true,
+  "lift_strict@1": 0.5178,
+  "lift_loose@1": 0.7886,
+  "mean_context_tokens@1": 120.7,
+  "recall_strict@3": 0.72,
+  "recall_loose@3": 1.0,
+  "mrr@3": 0.96,
+  "random_recall_strict@3": 0.1397,
+  "random_recall_loose@3": 0.3511,
+  "beats_random_loose@3": true,
+  "beats_random_strict@3": true,
+  "lift_strict@3": 0.5803,
+  "lift_loose@3": 0.6489,
+  "mean_context_tokens@3": 394.8,
+  "recall_strict@5": 0.84,
+  "recall_loose@5": 1.0,
+  "mrr@5": 0.96,
+  "random_recall_strict@5": 0.2578,
+  "random_recall_loose@5": 0.5238,
+  "beats_random_loose@5": true,
+  "beats_random_strict@5": true,
+  "lift_strict@5": 0.5822,
+  "lift_loose@5": 0.4762,
+  "mean_context_tokens@5": 637.6,
+  "recall_strict@10": 0.96,
+  "recall_loose@10": 1.0,
+  "mrr@10": 0.96,
+  "random_recall_strict@10": 0.6286,
+  "random_recall_loose@10": 0.8228,
+  "beats_random_loose@10": true,
+  "beats_random_strict@10": true,
+  "lift_strict@10": 0.3314,
+  "lift_loose@10": 0.1772,
+  "mean_context_tokens@10": 1205.0,
+  "corpus": {
+    "words": 1582,
+    "sections": 18,
+    "chunks": 14,
+    "mean_chunk_tokens": 115.6,
+    "oversize_chunks": 0
+  },
+  "citation": {
+    "precision": 0.3267,
+    "recall": 0.5,
+    "f1": 0.372,
+    "exact_match_rate": 0.12
+  },
+  "groundedness": {
+    "mean": 1.0,
+    "caveat": "Near-trivially high for the extractive generator, which lifts sentences verbatim from the retrieved context. Discriminates between configurations only on the LLM generation path."
+  },
+  "modality_fidelity": {
+    "mean": 1.0,
+    "n_scored": 9
+  },
+  "refusal": {
+    "refusal_rate": 0.9,
+    "over_refusal_rate": 0.36,
+    "balanced_accuracy": 0.77,
+    "correct_refusals": "9/10",
+    "wrong_refusals": "9/25",
+    "threshold": 0.7
+  },
+  "refusal_sweep": [
+    {
+      "threshold": 0.2,
+      "refusal_rate": 0.0,
+      "over_refusal_rate": 0.0,
+      "balanced_accuracy": 0.5,
+      "correct_refusals": "0/10",
+      "wrong_refusals": "0/25"
+    },
+    {
+      "threshold": 0.25,
+      "refusal_rate": 0.0,
+      "over_refusal_rate": 0.0,
+      "balanced_accuracy": 0.5,
+      "correct_refusals": "0/10",
+      "wrong_refusals": "0/25"
+    },
+    {
+      "threshold": 0.3,
+      "refusal_rate": 0.1,
+      "over_refusal_rate": 0.0,
+      "balanced_accuracy": 0.55,
+      "correct_refusals": "1/10",
+      "wrong_refusals": "0/25"
+    },
+    {
+      "threshold": 0.35,
+      "refusal_rate": 0.1,
+      "over_refusal_rate": 0.04,
+      "balanced_accuracy": 0.53,
+      "correct_refusals": "1/10",
+      "wrong_refusals": "1/25"
+    },
+    {
+      "threshold": 0.4,
+      "refusal_rate": 0.1,
+      "over_refusal_rate": 0.08,
+      "balanced_accuracy": 0.51,
+      "correct_refusals": "1/10",
+      "wrong_refusals": "2/25"
+    },
+    {
+      "threshold": 0.45,
+      "refusal_rate": 0.3,
+      "over_refusal_rate": 0.12,
+      "balanced_accuracy": 0.59,
+      "correct_refusals": "3/10",
+      "wrong_refusals": "3/25"
+    },
+    {
+      "threshold": 0.5,
+      "refusal_rate": 0.3,
+      "over_refusal_rate": 0.16,
+      "balanced_accuracy": 0.57,
+      "correct_refusals": "3/10",
+      "wrong_refusals": "4/25"
+    },
+    {
+      "threshold": 0.55,
+      "refusal_rate": 0.4,
+      "over_refusal_rate": 0.2,
+      "balanced_accuracy": 0.6,
+      "correct_refusals": "4/10",
+      "wrong_refusals": "5/25"
+    },
+    {
+      "threshold": 0.6,
+      "refusal_rate": 0.6,
+      "over_refusal_rate": 0.24,
+      "balanced_accuracy": 0.68,
+      "correct_refusals": "6/10",
+      "wrong_refusals": "6/25"
+    },
+    {
+      "threshold": 0.65,
+      "refusal_rate": 0.7,
+      "over_refusal_rate": 0.36,
+      "balanced_accuracy": 0.67,
+      "correct_refusals": "7/10",
+      "wrong_refusals": "9/25"
+    },
+    {
+      "threshold": 0.7,
+      "refusal_rate": 0.9,
+      "over_refusal_rate": 0.36,
+      "balanced_accuracy": 0.77,
+      "correct_refusals": "9/10",
+      "wrong_refusals": "9/25"
+    },
+    {
+      "threshold": 0.75,
+      "refusal_rate": 0.9,
+      "over_refusal_rate": 0.52,
+      "balanced_accuracy": 0.69,
+      "correct_refusals": "9/10",
+      "wrong_refusals": "13/25"
+    },
+    {
+      "threshold": 0.8,
+      "refusal_rate": 0.9,
+      "over_refusal_rate": 0.76,
+      "balanced_accuracy": 0.57,
+      "correct_refusals": "9/10",
+      "wrong_refusals": "19/25"
+    },
+    {
+      "threshold": 0.85,
+      "refusal_rate": 1.0,
+      "over_refusal_rate": 0.84,
+      "balanced_accuracy": 0.58,
+      "correct_refusals": "10/10",
+      "wrong_refusals": "21/25"
+    },
+    {
+      "threshold": 0.9,
+      "refusal_rate": 1.0,
+      "over_refusal_rate": 0.84,
+      "balanced_accuracy": 0.58,
+      "correct_refusals": "10/10",
+      "wrong_refusals": "21/25"
+    },
+    {
+      "threshold": 0.95,
+      "refusal_rate": 1.0,
+      "over_refusal_rate": 0.88,
+      "balanced_accuracy": 0.56,
+      "correct_refusals": "10/10",
+      "wrong_refusals": "22/25"
+    }
+  ],
+  "cost": {
+    "mean_latency_s": 0.00136,
+    "p95_latency_s": 0.00191,
+    "total_prompt_tokens": 20555,
+    "total_completion_tokens": 1307,
+    "mean_tokens_per_query": 624.6
+  },
+  "by_answer_type": {
+    "comparison": {
+      "n": 3,
+      "recall_strict@1": 1.0,
+      "recall_strict@3": 1.0,
+      "recall_strict@5": 1.0,
+      "recall_strict@10": 1.0,
+      "mrr@1": 1.0,
+      "mrr@3": 1.0,
+      "mrr@5": 1.0,
+      "mrr@10": 1.0
+    },
+    "conditional": {
+      "n": 7,
+      "recall_strict@1": 0.8571,
+      "recall_strict@3": 0.8571,
+      "recall_strict@5": 0.8571,
+      "recall_strict@10": 0.8571,
+      "mrr@1": 1.0,
+      "mrr@3": 1.0,
+      "mrr@5": 1.0,
+      "mrr@10": 1.0
+    },
+    "lookup": {
+      "n": 5,
+      "recall_strict@1": 0.8,
+      "recall_strict@3": 1.0,
+      "recall_strict@5": 1.0,
+      "recall_strict@10": 1.0,
+      "mrr@1": 0.8,
+      "mrr@3": 0.9,
+      "mrr@5": 0.9,
+      "mrr@10": 0.9
+    },
+    "synthesis": {
+      "n": 10,
+      "recall_strict@1": 0.1,
+      "recall_strict@3": 0.4,
+      "recall_strict@5": 0.7,
+      "recall_strict@10": 1.0,
+      "mrr@1": 0.9,
+      "mrr@3": 0.95,
+      "mrr@5": 0.95,
+      "mrr@10": 0.95
+    }
+  },
+  "by_tag": {
+    "comparison": {
+      "n": 3,
+      "recall_strict@3": 1.0,
+      "recall_loose@3": 1.0
+    },
+    "conditional": {
+      "n": 8,
+      "recall_strict@3": 0.875,
+      "recall_loose@3": 1.0
+    },
+    "cross_reference": {
+      "n": 4,
+      "recall_strict@3": 0.5,
+      "recall_loose@3": 1.0
+    },
+    "lexical_distractor": {
+      "n": 1,
+      "recall_strict@3": 1.0,
+      "recall_loose@3": 1.0
+    },
+    "lookup": {
+      "n": 5,
+      "recall_strict@3": 1.0,
+      "recall_loose@3": 1.0
+    },
+    "modality": {
+      "n": 5,
+      "recall_strict@3": 0.8,
+      "recall_loose@3": 1.0
+    },
+    "multi_hop": {
+      "n": 4,
+      "recall_strict@3": 0.5,
+      "recall_loose@3": 1.0
+    },
+    "numeric": {
+      "n": 1,
+      "recall_strict@3": 1.0,
+      "recall_loose@3": 1.0
+    },
+    "synthesis": {
+      "n": 7,
+      "recall_strict@3": 0.2857,
+      "recall_loose@3": 1.0
+    },
+    "table": {
+      "n": 7,
+      "recall_strict@3": 0.7143,
+      "recall_loose@3": 1.0
+    }
+  }
+}

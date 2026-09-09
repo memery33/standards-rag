@@ -1,0 +1,9 @@
+{
+  "run_name": "sectionaware-bm25-rerank",
+  "chunker": {"name": "section_aware", "params": {"max_tokens": 220, "min_tokens": 60}},
+  "retriever": {"name": "bm25"},
+  "reranker": {"name": "lexical_overlap", "params": {"weight": 0.5}},
+  "generator": {"name": "extractive"},
+  "refusal_threshold": 0.7,
+  "notes": "Reranking variable only, on top of sectionaware-bm25. Lexical overlap reranker, NOT a neural cross-encoder."
+}

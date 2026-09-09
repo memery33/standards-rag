@@ -1,0 +1,8 @@
+{
+  "run_name": "sectionaware-bm25",
+  "chunker": {"name": "section_aware", "params": {"max_tokens": 220, "min_tokens": 60}},
+  "retriever": {"name": "bm25"},
+  "generator": {"name": "extractive"},
+  "refusal_threshold": 0.7,
+  "notes": "Chunking variable only: section-aware instead of fixed window. Retriever, generator and threshold identical to fixedwindow-bm25."
+}
