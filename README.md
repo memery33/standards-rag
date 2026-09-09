@@ -1,76 +1,105 @@
 # standards-rag
 
-A retrieval-augmented question answering system over a technical standards
-document, built to be **measured rather than demoed**.
+Retrieval-augmented question answering over a technical standards document,
+built so that the **evaluation harness is the deliverable** and the chat
+interface is not.
 
-Most RAG projects stop at "it answers questions." This one treats retrieval
-quality as an engineering problem: every configuration change is scored against
-a fixed golden question set, results are versioned in `results/`, and the
-failures are documented alongside the wins.
+Most retrieval projects stop at "it answers questions." The interesting
+engineering problem is knowing whether the answers are *right*, and being able
+to show your work when someone asks.
 
-## Why this exists
+**Status: in progress.** The scaffold, corpus and evaluation design are in
+place. Retrieval and scored runs are being built now. Nothing in this README
+claims a result that isn't in `results/`.
 
-The corpus is an Internal Traffic Control Plan (ITCP) standards reference I
-wrote myself — a real document with the properties that make RAG hard:
-numbered clauses, nested cross-references, tables, and conditional language
-where "shall" and "should" carry different weight. Getting a citation wrong in
-a document like this is not a cosmetic failure.
+## The corpus
 
-## What is measured
+`data/raw/itcp-fundamentals.md` — a reference on Internal Traffic Control Plans
+(ITCPs), the site-specific plans that coordinate equipment and workers on foot
+inside a roadway work zone. It is my own paraphrased summary of public Federal
+Highway Administration and American Road and Transportation Builders
+Association guidance, written originally as reference material for
+[Spotter](https://www.planwithspotter.com), a work-zone safety product I build.
+
+It is small, roughly 1,600 words, and that shapes the whole design. What makes
+it a real test is not size:
+
+- **Conditional language.** "Shall", "should" and "may" carry different weight.
+  An answer that flattens them is wrong even when it reads correctly.
+- **Structure without clause numbers.** Markdown headings, one numbered
+  eight-step process, a symbology table and a personnel responsibility matrix.
+  There is no `4.2.1` to anchor a citation to, so ground truth is the
+  **heading path** (`Operation templates > Asphalt milling`) instead.
+- **Tables bound to prose.** Splitting one from its section loses the meaning.
+- **Consequences.** These are safety documents. A confident wrong citation is
+  the failure mode that matters.
+
+## Design decisions
+
+**Heading path is the ground truth, not the chunk ID.** The golden set records
+heading paths. Chunk IDs encode which strategy produced them. That is what
+makes the chunking comparison honest: fixed-window and section-aware chunkers
+cut in completely different places, and both are still scored against the same
+target.
+
+**Recall is reported strict and loose.** For questions needing several
+sections, strict means every gold section is in the top k; loose means at least
+one is. Reporting only loose flatters multi-section performance badly.
+Mean Reciprocal Rank uses the rank of the first gold section.
+
+**Refusal is a measured behavior.** A separate set of questions that sound
+plausible for this domain but are not answerable from the corpus. A system that
+never refuses is not safe, it is confident.
+
+## What gets measured
 
 | Dimension | Metric |
 |---|---|
-| Retrieval | recall@k and MRR at k = 1, 3, 5, 10 |
-| Answer quality | groundedness / faithfulness score |
+| Retrieval | recall@k (strict and loose) and Mean Reciprocal Rank at k = 1, 3, 5, 10 |
+| Answer quality | groundedness / faithfulness |
 | Citation | citation accuracy against the golden set |
 | Safety | refusal rate on out-of-corpus questions |
 | Cost | tokens and latency per query, logged per run |
 
-The golden question set lives in `data/golden/` and is committed. So are the
-eval runs in `results/`, so any claim in this README can be checked against
-the run that produced it.
+## Planned experiments
 
-## Experiments
+One variable at a time, each a separate committed run:
 
-Each of these is a separate scored run, not a design decision made by vibes:
-
-- Chunking strategy — fixed window vs. clause-aware splitting
-- Retrieval — dense vector vs. BM25 vs. hybrid
-- Reranking — with and without a cross-encoder rerank stage
-- Embedding model — comparison across at least two models
+- Chunking — fixed window versus section-aware
+- Retrieval — dense vector versus BM25 versus hybrid
+- Reranking — with and without
+- Embedding model — at least two compared
 
 ## Results
 
-_To be filled in from `results/` once the first runs complete. Include what
-regressed, not only what improved._
+Nothing yet. This section gets filled from `results/` as runs land, including
+the ones that made things worse.
 
-## Quick start
+## What did not work
 
-```bash
-cp .env.example .env      # add your API keys
-make install
-make ingest               # build the index from data/raw/
-make eval                 # score against the golden set
-make serve                # optional: local query interface
-```
+Reserved, and it will be used. A retrieval system that only reports its wins is
+not evidence of anything.
 
 ## Layout
 
 ```
-data/raw/      source documents (not committed if licensing is unclear)
-data/golden/   evaluation question set, committed
-src/ingest/    parsing and chunking
-src/retrieval/ index construction and search
-src/generation/ prompt assembly and answer synthesis
-src/eval/      scoring harness
-results/       versioned eval runs, committed
+data/raw/       the corpus
+data/golden/    evaluation question set and its schema
+results/        versioned eval runs, committed (never gitignored)
+src/            ingestion, retrieval, generation, eval
+tests/          unit tests for chunking and scoring
 ```
 
-## What did not work
+## Quick start
 
-_Kept deliberately. A retrieval system that only reports its wins is not
-evidence of anything._
+```bash
+cp .env.example .env
+make install
+make ingest
+make eval
+```
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). The corpus is my own writing, summarizing
+public-domain federal guidance.
