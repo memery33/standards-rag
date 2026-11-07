@@ -214,9 +214,9 @@ change that.
 
 ### The corpus contains its own best distractor, and BM25 survived it
 
-"Spotter" is a product name and "spotter" is a personnel role. Nineteen
-occurrences, most of them the product, concentrated in a trailing section that
-is not standards content. `q005` was written expecting BM25 to be dragged there.
+"Spotter" is a product name and "spotter" is a personnel role. Twenty
+occurrences in total, eight of them in the trailing product section, which is
+the single largest cluster and is not standards content. `q005` was written expecting BM25 to be dragged there.
 It was not — the personnel matrix ranks first. A predicted failure that did not
 happen, recorded because a golden set that only contains predictions that came
 true has been curated after the fact.

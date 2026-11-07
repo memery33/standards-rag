@@ -104,8 +104,8 @@ def test_refusal_distractors_give_the_retriever_something_to_fabricate_from(refu
 def test_product_commentary_section_is_never_gold(questions):
     """The trailing 'What this means for Spotter' section is not standards text.
 
-    It is in-corpus and lexically dominant -- 'Spotter' appears 19 times, mostly
-    as a product name rather than the personnel role -- so it is kept as a
+    It is in-corpus and lexically prominent -- 'Spotter' appears 20 times, and
+    the 8 in this section are the single largest cluster -- so it is kept as a
     distractor. Citing it as authority for an ITCP requirement is a failure.
     """
     forbidden = ("ITCP Fundamentals", "What this means for Spotter")
